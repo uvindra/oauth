@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ /*
+  ~ *  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~ *
+  ~ *  WSO2 Inc. licenses this file to you under the Apache License,
+  ~ *  Version 2.0 (the "License"); you may not use this file except
+  ~ *  in compliance with the License.
+  ~ *  You may obtain a copy of the License at
+  ~ *
+  ~ *    http://www.apache.org/licenses/LICENSE-2.0
+  ~ *
+  ~ * Unless required by applicable law or agreed to in writing,
+  ~ * software distributed under the License is distributed on an
+  ~ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ * KIND, either express or implied.  See the License for the
+  ~ * specific language governing permissions and limitations
+  ~ * under the License.
+  ~ *
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.wso2.carbon</groupId>
+    <artifactId>org.wso2.carbon.security.rest.api.oauth</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    
+    <name>API Store Micro Service</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.msf4j</groupId>
+            <artifactId>msf4j-core</artifactId>
+            <version>${org.wso2.msf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${com.fasterxml.jackson.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${com.fasterxml.jackson.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${io.swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax.ws.rs-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${com.fasterxml.jackson.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.wso2.maven.plugins</groupId>
+            <artifactId>swagger2msf4j-maven-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/oauth-api.yaml</inputSpec>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>1.9.1</version>
+            <executions>
+                <execution>
+                    <id>add-source</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>src/gen/java</source>
+                        </sources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin><!-- Overridden from parent pom to exclude generated sources -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>validate</id>
+                    <phase>validate</phase>
+                    <configuration>
+                        <configLocation>
+                            https://raw.githubusercontent.com/wso2/code-quality-tools/master/checkstyle/checkstyle.xml
+                        </configLocation>
+                        <suppressionsLocation>
+                            https://raw.githubusercontent.com/wso2/code-quality-tools/master/checkstyle/suppressions.xml
+                        </suppressionsLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <!--Exclude generated sources-->
+                        <excludes>**/gen/**/*</excludes>
+                        <!--skip for generated resources-->
+                        <skip>true</skip>
+                    </configuration>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+    </build>
+
+    <properties>
+        <org.wso2.msf4j.version>2.3.0-m1</org.wso2.msf4j.version>
+        <msf4j.package.import.version.range>[2.0.0, 3.0.0)</msf4j.package.import.version.range>
+
+        <com.fasterxml.jackson.core.version>2.7.4</com.fasterxml.jackson.core.version>
+
+        <io.swagger.version>1.5.10</io.swagger.version>
+        <io.swagger.import.version.range>[1.5.0, 1.6.0)</io.swagger.import.version.range>
+
+        <servlet-api-version>3.1.0</servlet-api-version>
+
+        <javax.ws.rs-api.version>2.0</javax.ws.rs-api.version>
+        <javax.ws.rs-api.import.version>2.0</javax.ws.rs-api.import.version>
+    </properties>
+</project>
